@@ -10,6 +10,13 @@ jobs:
   build-and-test:
     runs-on: ubuntu-latest
 
+    env:
+      DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/db"
+      WEB3_DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/web3"
+      JWT_SECRET: "dummy_jwt_secret"
+      WEB3_INTERNAL_TOKEN: "dummy_internal_token"
+      MAGIC_SECRET_KEY: "sk_test_mock_12345"
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
