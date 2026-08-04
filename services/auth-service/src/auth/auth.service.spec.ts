@@ -3,7 +3,7 @@ import { AuthService } from './auth.service.js';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from '../prisma/prisma.service.js';
 import * as argon2 from 'argon2';
-import { Role } from '@prisma/client';
+import { Role } from '../generated/client/index.js';
 import * as crypto from 'crypto';
 
 describe('AuthService Suite', () => {

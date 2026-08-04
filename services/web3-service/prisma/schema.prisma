@@ -1,0 +1,19 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("WEB3_DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/client"
+}
+
+model UserWallet {
+  id            String   @id @default(uuid())
+  userId        String   // Reference to auth-service's User.id
+  institutionId String
+  walletAddress String   @unique
+  did           String   @unique
+  chain         String   @default("polygon-amoy")
+  createdAt     DateTime @default(now())
+}

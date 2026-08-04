@@ -3,7 +3,7 @@ import { AuthService } from './auth.service.js';
 import { Roles } from './decorators/roles.decorator.js';
 import { Public } from './decorators/public.decorator.js';
 import { CurrentUser, CurrentTenantId } from './decorators/tenant-id.decorator.js';
-import { Role } from '@prisma/client';
+import { Role } from '../generated/client/index.js';
 import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
 
 @Controller('auth')

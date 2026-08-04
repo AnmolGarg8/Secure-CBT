@@ -1,7 +1,7 @@
 import { Injectable, UnauthorizedException, ForbiddenException, BadRequestException, ConflictException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from '../prisma/prisma.service.js';
-import { Role, User } from '@prisma/client';
+import { Role, User } from '../generated/client/index.js';
 import * as argon2 from 'argon2';
 import { authenticator } from 'otplib';
 import * as crypto from 'crypto';
