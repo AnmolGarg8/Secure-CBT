@@ -1,0 +1,50 @@
+### Global Variables Definition
+@baseUrl = http://localhost:3004
+@contentType = application/json
+@internalToken = secure_internal_dev_token_123
+
+### 1. Health Diagnostics (Public Endpoint)
+GET {{baseUrl}}/web3/health
+Content-Type: {{contentType}}
+
+### 2. Provision Wallet (Success case)
+POST {{baseUrl}}/web3/wallets
+Authorization: Bearer {{internalToken}}
+Content-Type: {{contentType}}
+
+{
+  "userId": "user-a-12345",
+  "institutionId": "inst-a-id-12345",
+  "email": "user@uni-a.edu"
+}
+
+### 3. Provision Wallet Idempotency (Retry using same userId returns 200 with identical address)
+POST {{baseUrl}}/web3/wallets
+Authorization: Bearer {{internalToken}}
+Content-Type: {{contentType}}
+
+{
+  "userId": "user-a-12345",
+  "institutionId": "inst-a-id-12345",
+  "email": "user@uni-a.edu"
+}
+
+### 4. Fetch Wallet Info by User ID
+GET {{baseUrl}}/web3/wallets/user-a-12345
+Authorization: Bearer {{internalToken}}
+Content-Type: {{contentType}}
+
+### 5. Fetch Wallet Info - Not Found (404 Case)
+GET {{baseUrl}}/web3/wallets/non-existent-user
+Authorization: Bearer {{internalToken}}
+Content-Type: {{contentType}}
+
+### 6. Provision Wallet - Missing Authorization Header (401 Unauthorized)
+POST {{baseUrl}}/web3/wallets
+Content-Type: {{contentType}}
+
+{
+  "userId": "user-a-12345",
+  "institutionId": "inst-a-id-12345",
+  "email": "user@uni-a.edu"
+}
