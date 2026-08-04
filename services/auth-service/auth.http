@@ -1,0 +1,96 @@
+### Global Variables Definition
+@baseUrl = http://localhost:3001
+@contentType = application/json
+
+### 1. Health Check (Public Endpoint)
+GET {{baseUrl}}/health
+Content-Type: {{contentType}}
+
+### 2. Login (Success - University A Admin)
+# @name loginSuccess
+POST {{baseUrl}}/auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "admin@uni-a.edu",
+  "passwordHash": "secure_admin_password_123",
+  "institutionId": "inst-a-id-12345"
+}
+
+###
+
+@token = {{loginSuccess.response.body.accessToken}}
+@refreshToken = {{loginSuccess.response.body.refreshToken}}
+
+### 3. Get Own Profile (Authenticated)
+GET {{baseUrl}}/auth/me
+Authorization: Bearer {{token}}
+Content-Type: {{contentType}}
+
+### 4. Create a User (Restricted - Called by Admin)
+POST {{baseUrl}}/auth/register
+Authorization: Bearer {{token}}
+Content-Type: {{contentType}}
+
+{
+  "email": "instructor@uni-a.edu",
+  "passwordHash": "instructor_pass_123",
+  "role": "INSTRUCTOR"
+}
+
+### 5. Login Fail Case: Incorrect Password (Log Attempt recorded)
+POST {{baseUrl}}/auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "admin@uni-a.edu",
+  "passwordHash": "wrong_password",
+  "institutionId": "inst-a-id-12345"
+}
+
+### 6. Login Fail Case: Tenant Mismatch (Forbidden / Not Found checks)
+POST {{baseUrl}}/auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "admin@uni-a.edu",
+  "passwordHash": "secure_admin_password_123",
+  "institutionId": "inst-b-id-67890"
+}
+
+### 7. MFA Setup (Authenticated - University A Admin)
+# @name mfaSetup
+POST {{baseUrl}}/auth/mfa/setup
+Authorization: Bearer {{token}}
+Content-Type: {{contentType}}
+
+###
+
+@mfaSecret = {{mfaSetup.response.body.secret}}
+
+### 8. MFA Verify (Enables MFA)
+# Replace code with the actual generated code from TOTP helper (e.g. using authenticator.generate(secret))
+POST {{baseUrl}}/auth/mfa/verify
+Authorization: Bearer {{token}}
+Content-Type: {{contentType}}
+
+{
+  "code": "123456"
+}
+
+### 9. Refresh Session (Rotate tokens)
+POST {{baseUrl}}/auth/refresh
+Content-Type: {{contentType}}
+
+{
+  "refreshToken": "{{refreshToken}}",
+  "deviceFingerprint": "chrome-macbook-pro"
+}
+
+### 10. Logout (Revoke tokens)
+POST {{baseUrl}}/auth/logout
+Content-Type: {{contentType}}
+
+{
+  "refreshToken": "{{refreshToken}}"
+}

@@ -1,0 +1,65 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum Role {
+  SUPER_ADMIN
+  INSTITUTION_ADMIN
+  INSTRUCTOR
+  PROCTOR
+  GRADER
+  CANDIDATE
+  OBSERVER
+}
+
+model Institution {
+  id        String   @id @default(uuid())
+  name      String
+  createdAt DateTime @default(now())
+  users     User[]
+}
+
+model User {
+  id            String         @id @default(uuid())
+  institutionId String
+  institution   Institution    @relation(fields: [institutionId], references: [id], onDelete: Cascade)
+  email         String
+  passwordHash  String
+  role          Role
+  mfaSecret     String?        // Encrypted at rest (AES-256-GCM)
+  mfaEnabled    Boolean        @default(false)
+  isActive      Boolean        @default(true)
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  refreshTokens RefreshToken[]
+  loginAttempts LoginAttempt[]
+
+  @@unique([email, institutionId])
+}
+
+model RefreshToken {
+  id                String    @id @default(uuid())
+  userId            String
+  user              User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tokenHash         String    @unique
+  issuedAt          DateTime  @default(now())
+  expiresAt         DateTime
+  revokedAt         DateTime?
+  deviceFingerprint String?
+}
+
+model LoginAttempt {
+  id        String   @id @default(uuid())
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  email     String
+  success   Boolean
+  ipAddress String
+  userAgent String
+  createdAt DateTime @default(now())
+}
