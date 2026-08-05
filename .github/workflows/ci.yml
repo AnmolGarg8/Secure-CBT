@@ -32,12 +32,9 @@ jobs:
       - name: Install Dependencies
         run: |
           pnpm install --frozen-lockfile > pnpm-install.log 2>&1 || {
-            echo "### PNPM Install Log" >> $GITHUB_STEP_SUMMARY
-            echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
-            cat pnpm-install.log >> $GITHUB_STEP_SUMMARY
-            echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
-            echo "Uploading logs to 0x0.st..."
-            curl -F "file=@pnpm-install.log" https://0x0.st
+            while IFS= read -r line; do
+              echo "::error::$line"
+            done < pnpm-install.log
             exit 1
           }
 
