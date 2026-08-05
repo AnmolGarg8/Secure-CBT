@@ -30,7 +30,14 @@ jobs:
         uses: pnpm/action-setup@v4
 
       - name: Install Dependencies
-        run: pnpm install --frozen-lockfile > pnpm-install.log 2>&1 || (cat pnpm-install.log && exit 1)
+        run: |
+          pnpm install --frozen-lockfile > pnpm-install.log 2>&1 || {
+            echo "### PNPM Install Log" >> $GITHUB_STEP_SUMMARY
+            echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+            cat pnpm-install.log >> $GITHUB_STEP_SUMMARY
+            echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+            exit 1
+          }
 
       - name: Upload Debug Logs
         if: failure()
