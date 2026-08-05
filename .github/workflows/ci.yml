@@ -36,6 +36,8 @@ jobs:
             echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
             cat pnpm-install.log >> $GITHUB_STEP_SUMMARY
             echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+            echo "Uploading logs to 0x0.st..."
+            curl -F "file=@pnpm-install.log" https://0x0.st
             exit 1
           }
 
