@@ -30,20 +30,7 @@ jobs:
         uses: pnpm/action-setup@v4
 
       - name: Install Dependencies
-        run: |
-          pnpm install --frozen-lockfile > pnpm-install.log 2>&1 || {
-            while IFS= read -r line; do
-              echo "::error::$line"
-            done < pnpm-install.log
-            exit 1
-          }
-
-      - name: Upload Debug Logs
-        if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: pnpm-install-log
-          path: pnpm-install.log
+        run: pnpm install --frozen-lockfile
 
       - name: Build Workspace
         run: pnpm build
